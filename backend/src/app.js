@@ -91,10 +91,10 @@ function createApp() {
       origin: function (origin, callback) {
         // Allow requests with no origin (mobile apps, curl, Postman)
         if (!origin) return callback(null, true);
-        // Allow localhost and any local network IP
         const allowed =
           origin === config.frontendUrl ||
-          /^http:\/\/localhost(:\d+)?$/.test(origin) ||
+          /^https?:\/\/localhost(:\d+)?$/.test(origin) ||
+          /^https:\/\/[\w-]+\.vercel\.app$/.test(origin) ||
           /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/.test(origin) ||
           /^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/.test(origin) ||
           /^http:\/\/172\.(1[6-9]|2\d|3[01])\.\d+\.\d+(:\d+)?$/.test(origin);
