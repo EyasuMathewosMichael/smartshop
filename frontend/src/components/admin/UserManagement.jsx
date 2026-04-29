@@ -156,9 +156,9 @@ export default function UserManagement() {
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
                 <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">User</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide hidden sm:table-cell">Role</th>
+                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Role</th>
                 <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Status</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide hidden md:table-cell">Joined</th>
+                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Joined</th>
                 <th className="text-right px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Actions</th>
               </tr>
             </thead>
@@ -185,7 +185,7 @@ export default function UserManagement() {
                     </td>
 
                     {/* Role selector */}
-                    <td className="px-5 py-4 hidden sm:table-cell">
+                    <td className="px-5 py-4">
                       <div className="relative">
                         <select
                           value={user.role}
@@ -224,7 +224,7 @@ export default function UserManagement() {
                     </td>
 
                     {/* Joined date */}
-                    <td className="px-5 py-4 text-xs text-slate-400 hidden md:table-cell">
+                    <td className="px-5 py-4 text-xs text-slate-400">
                       {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </td>
 

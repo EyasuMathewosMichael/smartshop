@@ -63,9 +63,9 @@ export default function ProductManagement() {
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
                 <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Name</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide hidden sm:table-cell">Category</th>
+                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Category</th>
                 <th className="text-right px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Price</th>
-                <th className="text-right px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide hidden sm:table-cell">Stock</th>
+                <th className="text-right px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Stock</th>
                 <th className="text-right px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Actions</th>
               </tr>
             </thead>
@@ -86,9 +86,9 @@ export default function ProductManagement() {
                       <span className="font-semibold text-slate-800 max-w-[140px] truncate">{p.name}</span>
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-slate-500 capitalize hidden sm:table-cell">{p.category}</td>
+                  <td className="px-5 py-4 text-slate-500 capitalize">{p.category}</td>
                   <td className="px-5 py-4 text-right font-semibold text-slate-800">${p.price?.toFixed(2)}</td>
-                  <td className="px-5 py-4 text-right hidden sm:table-cell">
+                  <td className="px-5 py-4 text-right">
                     <span className={`font-semibold ${p.stock > 0 ? 'text-emerald-600' : 'text-red-500'}`}>{p.stock}</span>
                   </td>
                   <td className="px-5 py-4 text-right">
