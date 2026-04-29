@@ -80,11 +80,11 @@ export default function AdminOrderList() {
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
                 <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Order #</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Customer</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Date</th>
+                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide hidden md:table-cell">Customer</th>
+                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide hidden sm:table-cell">Date</th>
                 <th className="text-right px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Total</th>
                 <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Status</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Payment</th>
+                <th className="text-left px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide hidden sm:table-cell">Payment</th>
                 <th className="text-right px-5 py-3.5 font-semibold text-slate-500 text-xs uppercase tracking-wide">Actions</th>
               </tr>
             </thead>
@@ -92,15 +92,15 @@ export default function AdminOrderList() {
               {orders.map(order => (
                 <tr key={order._id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-5 py-4 font-semibold text-slate-800">#{order.orderNumber}</td>
-                  <td className="px-5 py-4 text-slate-600">{order.userId?.name || order.userId?.email || '—'}</td>
-                  <td className="px-5 py-4 text-slate-500 text-xs">{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                  <td className="px-5 py-4 text-slate-600 hidden md:table-cell">{order.userId?.name || order.userId?.email || '—'}</td>
+                  <td className="px-5 py-4 text-slate-500 text-xs hidden sm:table-cell">{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                   <td className="px-5 py-4 text-right font-bold text-slate-800">${order.total?.toFixed(2)}</td>
                   <td className="px-5 py-4">
                     <span className={`badge ${STATUS_COLORS[order.orderStatus] || 'bg-slate-100 text-slate-600'}`}>
                       {order.orderStatus}
                     </span>
                   </td>
-                  <td className="px-5 py-4">
+                  <td className="px-5 py-4 hidden sm:table-cell">
                     <span className={`badge ${STATUS_COLORS[order.paymentStatus] || 'bg-slate-100 text-slate-600'}`}>
                       {order.paymentStatus}
                     </span>
