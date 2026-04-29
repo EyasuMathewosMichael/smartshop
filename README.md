@@ -104,8 +104,8 @@ REACT_APP_STRIPE_PUBLIC_KEY=your_stripe_public_key
 ```
 
 ## 🚀 Deployment
-- **Frontend**: Vercel / Netlify
-- **Backend**: Render / Railway
+- **Frontend**: Vercel 
+- **Backend**: Render
 - **Database**: MongoDB Atlas
 
 ## 📚 API Documentation
