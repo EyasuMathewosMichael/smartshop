@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Order Has Shipped</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .header { background-color: #2563eb; padding: 32px; text-align: center; }
+    .header h1 { color: #ffffff; margin: 0; font-size: 28px; }
+    .body { padding: 32px; }
+    .body h2 { color: #1e293b; }
+    .body p { color: #475569; line-height: 1.6; }
+    .tracking-details { background-color: #f8fafc; border-radius: 6px; padding: 20px; margin: 20px 0; }
+    .tracking-details table { width: 100%; border-collapse: collapse; }
+    .tracking-details td { padding: 8px 0; color: #475569; }
+    .tracking-details td:first-child { font-weight: bold; color: #1e293b; width: 40%; }
+    .footer { background-color: #f8fafc; padding: 16px; text-align: center; color: #94a3b8; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>SmartShop</h1>
+    </div>
+    <div class="body">
+      <h2>Your Order Has Shipped!</h2>
+      <p>Great news! Your order #{{orderNumber}} is on its way.</p>
+      <div class="tracking-details">
+        <table>
+          <tr>
+            <td>Order Number:</td>
+            <td>#{{orderNumber}}</td>
+          </tr>
+          <tr>
+            <td>Tracking Number:</td>
+            <td>{{trackingNumber}}</td>
+          </tr>
+          <tr>
+            <td>Carrier:</td>
+            <td>{{carrier}}</td>
+          </tr>
+          <tr>
+            <td>Estimated Delivery:</td>
+            <td>{{estimatedDelivery}}</td>
+          </tr>
+        </table>
+      </div>
+      <p>You can use the tracking number above to track your shipment with the carrier.</p>
+    </div>
+    <div class="footer">
+      <p>&copy; 2024 SmartShop. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
