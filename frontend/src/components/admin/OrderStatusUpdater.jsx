@@ -15,14 +15,14 @@ export default function OrderStatusUpdater({ order, onUpdated }) {
     setSaving(true);
     setError('');
     try {
-      const payload = { orderStatus: status };
+      const payload = { status };
       if (status === 'shipped') {
         payload.trackingInfo = { carrier, trackingNumber };
       }
       await api.put(`/admin/orders/${order._id}`, payload);
       onUpdated?.();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update status.');
+      setError(err.response?.data?.error?.message || err.response?.data?.message || 'Failed to update status.');
     } finally {
       setSaving(false);
     }
