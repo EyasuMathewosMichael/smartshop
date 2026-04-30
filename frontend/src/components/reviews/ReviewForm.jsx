@@ -20,7 +20,7 @@ export default function ReviewForm({ productId, onReviewAdded }) {
       setComment('');
       onReviewAdded?.();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit review.');
+      setError(err.response?.data?.error?.message || err.response?.data?.message || 'Failed to submit review.');
     } finally {
       setSubmitting(false);
     }

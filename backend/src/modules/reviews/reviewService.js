@@ -1,5 +1,6 @@
 'use strict';
 
+const mongoose = require('mongoose');
 const Review = require('../../models/Review');
 const Order = require('../../models/Order');
 const Product = require('../../models/Product');
@@ -17,7 +18,7 @@ async function verifyPurchase(userId, productId) {
     const order = await Order.findOne({
       userId,
       orderStatus: { $in: ['paid', 'shipped', 'delivered'] },
-      'items.productId': productId,
+      'items.productId': new mongoose.Types.ObjectId(productId),
     });
 
     return !!order;
@@ -202,7 +203,7 @@ async function getProductReviews(productId, pagination = {}) {
 async function recalculateAverageRating(productId) {
   try {
     const result = await Review.aggregate([
-      { $match: { productId: productId } },
+      { $match: { productId: new mongoose.Types.ObjectId(productId) } },
       {
         $group: {
           _id: null,
