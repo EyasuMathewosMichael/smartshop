@@ -52,7 +52,7 @@ async function sendEmail(recipient, subject, templateName, data) {
 
     // Send email
     await transporter.sendMail({
-      from: `SmartShop <noreply@smartshop.com>`,
+      from: `SmartShop <${process.env.SENDGRID_FROM_EMAIL || 'noreply@smartshop.com'}>`,
       to: recipient,
       subject,
       html,
