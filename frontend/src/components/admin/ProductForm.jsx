@@ -35,29 +35,32 @@ export default function ProductForm({ product, onSaved, onCancel }) {
     setSubmitting(true);
 
     try {
-      let savedProduct;
-      const payload = { ...form, price: Number(form.price), stock: Number(form.stock) };
+      // Always use FormData so images can be included in the same request
+      const formData = new FormData();
+      formData.append('name', form.name);
+      formData.append('description', form.description);
+      formData.append('price', Number(form.price));
+      formData.append('stock', Number(form.stock));
+      formData.append('category', form.category);
+      images.forEach(img => formData.append('images', img));
 
       if (isEdit) {
-        const res = await api.put(`/products/${product._id}`, payload);
-        savedProduct = res.data.product || res.data;
+        await api.put(`/products/${product._id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
       } else {
-        const res = await api.post('/products', payload);
-        savedProduct = res.data.product || res.data;
-      }
-
-      // Upload images if any
-      if (images.length > 0) {
-        const formData = new FormData();
-        images.forEach(img => formData.append('images', img));
-        await api.post(`/products/${savedProduct._id}/images`, formData, {
+        await api.post('/products', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       }
 
       onSaved?.();
     } catch (err) {
-      setApiError(err.response?.data?.message || 'Failed to save product.');
+      setApiError(
+        err.response?.data?.error?.message ||
+        err.response?.data?.message ||
+        'Failed to save product.'
+      );
     } finally {
       setSubmitting(false);
     }
