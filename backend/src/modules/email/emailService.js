@@ -8,15 +8,65 @@ const EmailLog = require('../../models/EmailLog');
 const { config } = require('../../config/env');
 const logger = require('../../utils/logger');
 
-// Configure nodemailer transporter using SendGrid SMTP
-const transporter = nodemailer.createTransport({
-  host: 'smtp.sendgrid.net',
-  port: 587,
-  auth: {
-    user: 'apikey',
-    pass: config.emailServiceApiKey,
-  },
-});
+/**
+ * Create the nodemailer transporter based on available environment variables.
+ *
+ * Priority:
+ *  1. Gmail SMTP  (EMAIL_USER + EMAIL_PASS)
+ *  2. SendGrid    (EMAIL_SERVICE_API_KEY)
+ *  3. Generic SMTP (EMAIL_HOST + EMAIL_PORT + EMAIL_USER + EMAIL_PASS)
+ *  4. Ethereal    (development fallback — catches all emails, never delivers)
+ */
+function createTransporter() {
+  // Gmail
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS && !process.env.EMAIL_HOST) {
+    logger.info('Email: using Gmail SMTP');
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS, // use an App Password, not your real password
+      },
+    });
+  }
+
+  // SendGrid
+  if (config.emailServiceApiKey) {
+    logger.info('Email: using SendGrid SMTP');
+    return nodemailer.createTransport({
+      host: 'smtp.sendgrid.net',
+      port: 587,
+      auth: {
+        user: 'apikey',
+        pass: config.emailServiceApiKey,
+      },
+    });
+  }
+
+  // Generic SMTP (e.g. AWS SES SMTP, Mailgun, etc.)
+  if (process.env.EMAIL_HOST) {
+    logger.info(`Email: using generic SMTP (${process.env.EMAIL_HOST})`);
+    return nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: parseInt(process.env.EMAIL_PORT || '587', 10),
+      secure: process.env.EMAIL_SECURE === 'true',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+  }
+
+  // Development fallback — logs emails but never sends them
+  logger.warn('Email: no provider configured, using Ethereal test account (emails will NOT be delivered)');
+  return nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    auth: { user: 'test@ethereal.email', pass: 'test' },
+  });
+}
+
+const transporter = createTransporter();
 
 /**
  * Send an email using a template.
