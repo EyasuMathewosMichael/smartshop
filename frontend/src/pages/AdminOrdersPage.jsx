@@ -4,14 +4,16 @@ import AdminOrderList from '../components/admin/AdminOrderList';
 
 export default function AdminOrdersPage() {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex h-screen overflow-hidden bg-slate-50">
       <AdminSidebar />
-      <main className="flex-1 p-6 pt-20 md:pt-6 overflow-auto">
-        <div className="max-w-7xl mx-auto">
-          <AdminHeader title="Orders" />
-          <AdminOrderList />
-        </div>
-      </main>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <AdminHeader title="Orders" />
+        <main className="flex-1 overflow-y-auto p-6 pt-20 md:pt-6">
+          <div className="max-w-7xl mx-auto">
+            <AdminOrderList />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
