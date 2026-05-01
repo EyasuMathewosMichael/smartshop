@@ -94,7 +94,38 @@ function verifyChapaWebhook(payload, signature) {
   }
 }
 
+/**
+ * Verify a Chapa transaction by tx_ref.
+ *
+ * @param {string} txRef - Transaction reference
+ * @returns {Promise<object>} Chapa transaction data
+ */
+async function verifyChapaTransaction(txRef) {
+  try {
+    if (!config.chapaSecretKey) {
+      const err = new Error('Chapa is not configured.');
+      err.statusCode = 503;
+      throw err;
+    }
+
+    const response = await axios.get(
+      `https://api.chapa.co/v1/transaction/verify/${txRef}`,
+      {
+        headers: {
+          Authorization: `Bearer ${config.chapaSecretKey}`,
+        },
+      }
+    );
+
+    return response.data.data;
+  } catch (error) {
+    logger.error('Error verifying Chapa transaction:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   initializeChapaPayment,
   verifyChapaWebhook,
+  verifyChapaTransaction,
 };

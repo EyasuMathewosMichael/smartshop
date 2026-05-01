@@ -21,7 +21,12 @@ router.post(
  * @route   POST /api/webhooks/chapa
  * @desc    Handle Chapa webhook events
  * @access  Public (verified via HMAC signature)
+ * @note    Uses express.json() to parse the JSON body
  */
-router.post('/chapa', webhookController.handleChapaWebhook);
+router.post(
+  '/chapa',
+  express.json(),
+  webhookController.handleChapaWebhook
+);
 
 module.exports = router;

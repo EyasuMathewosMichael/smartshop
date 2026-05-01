@@ -23,4 +23,11 @@ router.post('/stripe/create-session', paymentController.createStripeSession);
  */
 router.post('/chapa/initialize', paymentController.initializeChapaPayment);
 
+/**
+ * @route   POST /api/payments/chapa/verify
+ * @desc    Verify a Chapa payment by tx_ref after redirect
+ * @access  Private
+ */
+router.post('/chapa/verify', paymentController.verifyChapaPayment);
+
 module.exports = router;

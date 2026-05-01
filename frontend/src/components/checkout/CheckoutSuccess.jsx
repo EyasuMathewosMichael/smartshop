@@ -1,8 +1,41 @@
+import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import api from '../../utils/api';
 
 export default function CheckoutSuccess() {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('order_id') || searchParams.get('order');
+  const txRef = searchParams.get('trx_ref') || searchParams.get('tx_ref');
+
+  const [verifying, setVerifying] = useState(!!txRef);
+  const [verifyError, setVerifyError] = useState(null);
+
+  useEffect(() => {
+    if (!txRef) return;
+
+    async function verifyChapa() {
+      try {
+        await api.post('/payments/chapa/verify', { txRef });
+      } catch (err) {
+        // Non-fatal — order may already be confirmed via webhook
+        console.error('Chapa verify error:', err);
+        setVerifyError('Payment verification is taking longer than expected. Your order will be confirmed shortly.');
+      } finally {
+        setVerifying(false);
+      }
+    }
+
+    verifyChapa();
+  }, [txRef]);
+
+  if (verifying) {
+    return (
+      <div className="text-center py-16 px-4">
+        <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-6" />
+        <p className="text-slate-500">Confirming your payment…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="text-center py-16 px-4">
@@ -16,8 +49,13 @@ export default function CheckoutSuccess() {
       <h1 className="text-3xl font-bold text-slate-800 mb-2">Order Confirmed!</h1>
       <p className="text-slate-500 mb-2">Thank you for your purchase.</p>
       {orderId && (
-        <p className="text-sm text-slate-400 mb-8">
+        <p className="text-sm text-slate-400 mb-4">
           Order ID: <span className="font-mono font-semibold text-slate-600">{orderId}</span>
+        </p>
+      )}
+      {verifyError && (
+        <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 mb-4 max-w-sm mx-auto">
+          {verifyError}
         </p>
       )}
       <p className="text-slate-500 text-sm mb-8 max-w-sm mx-auto">
