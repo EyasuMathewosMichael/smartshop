@@ -43,6 +43,7 @@ export default function ProductManagement() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
+          <h2 className="text-xl font-bold text-slate-800 md:hidden">Products</h2>
           {!loading && <p className="text-sm text-slate-400 mt-0.5">{total} total products</p>}
         </div>
         <button
