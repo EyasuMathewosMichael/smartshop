@@ -185,6 +185,8 @@ export default function CheckoutPage() {
             )}
           </button>
           <p className="text-xs text-center text-slate-400 mt-1">🔒 Secured and encrypted</p>
+        </div>
+      </form>
     </div>
   );
 }
