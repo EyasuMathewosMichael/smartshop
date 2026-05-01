@@ -54,7 +54,9 @@ export default function OrderHistory({ orders = [], loading = false }) {
 
             <div className="flex items-center gap-3">
               <span className={`badge ${status.cls}`}>{status.label}</span>
-              <span className="font-bold text-slate-800">${order.total?.toFixed(2)}</span>
+              <span className="font-bold text-slate-800">
+                {order.currency === 'ETB' ? 'ETB ' : '$'}{order.total?.toFixed(2)}
+              </span>
               <svg className="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>

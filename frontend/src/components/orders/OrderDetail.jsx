@@ -12,6 +12,7 @@ export default function OrderDetail({ order }) {
   if (!order) return null;
   const addr = order.shippingAddress || {};
   const status = STATUS_CONFIG[order.orderStatus] || { label: order.orderStatus, cls: 'bg-slate-100 text-slate-600' };
+  const currencySymbol = order.currency === 'ETB' ? 'ETB ' : '$';
 
   return (
     <div className="space-y-6">
@@ -48,17 +49,19 @@ export default function OrderDetail({ order }) {
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-slate-800 truncate">{item.name}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Qty: {item.quantity} × ${item.price?.toFixed(2)}</p>
+                <p className="text-xs text-slate-400 mt-0.5">Qty: {item.quantity} × {currencySymbol}{item.price?.toFixed(2)}</p>
               </div>
               <p className="text-sm font-bold text-slate-800 shrink-0">
-                ${(item.price * item.quantity).toFixed(2)}
+                {currencySymbol}{(item.price * item.quantity).toFixed(2)}
               </p>
             </div>
           ))}
         </div>
         <div className="px-5 py-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
           <span className="font-bold text-slate-700">Total</span>
-          <span className="text-lg font-bold text-indigo-600">${order.total?.toFixed(2)} {order.currency}</span>
+          <span className="text-lg font-bold text-indigo-600">
+            {order.currency === 'ETB' ? 'ETB ' : '$'}{order.total?.toFixed(2)}
+          </span>
         </div>
       </div>
 

@@ -94,7 +94,9 @@ export default function AdminOrderList() {
                   <td className="px-5 py-4 font-semibold text-slate-800">#{order.orderNumber}</td>
                   <td className="px-5 py-4 text-slate-600">{order.userId?.name || order.userId?.email || '—'}</td>
                   <td className="px-5 py-4 text-slate-500 text-xs">{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                  <td className="px-5 py-4 text-right font-bold text-slate-800">${order.total?.toFixed(2)}</td>
+                  <td className="px-5 py-4 text-right font-bold text-slate-800">
+                    {order.currency === 'ETB' ? 'ETB ' : '$'}{order.total?.toFixed(2)}
+                  </td>
                   <td className="px-5 py-4">
                     <span className={`badge ${STATUS_COLORS[order.orderStatus] || 'bg-slate-100 text-slate-600'}`}>
                       {order.orderStatus}
