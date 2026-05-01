@@ -88,7 +88,7 @@ function SidebarContent({ onClose }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-hidden">
         {NAV_ITEMS.map(item => (
           <NavLink
             key={item.to}
@@ -188,8 +188,8 @@ export default function AdminSidebar() {
         </div>
       )}
 
-      {/* ── Desktop sidebar (always visible on md+) ────────────────────── */}
-      <aside className="hidden md:flex w-64 bg-slate-900 text-slate-300 min-h-screen flex-col shrink-0">
+      {/* Desktop sidebar (always visible on md+) */}
+      <aside className="hidden md:flex w-64 bg-slate-900 text-slate-300 min-h-screen flex-col shrink-0 sticky top-0 h-screen overflow-hidden">
         <SidebarContent onClose={null} />
       </aside>
     </>
