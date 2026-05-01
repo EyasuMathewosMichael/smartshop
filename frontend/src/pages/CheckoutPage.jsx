@@ -68,7 +68,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="page-container">
+    <div className="page-container pb-24 lg:pb-8">
       <h1 className="section-title mb-6">Checkout</h1>
 
       {apiError && (
@@ -121,37 +121,70 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Order summary */}
-          <div className="space-y-4">
-            <OrderSummary items={items} shippingAddress={address} total={total} paymentMethod={paymentMethod} />
-            <button
-              type="submit"
-              disabled={submitting || !items.length}
-              className="btn-primary w-full py-3.5 text-base"
-            >
-              {submitting ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Processing…
-                </span>
-              ) : (
-                <>
-                  Place Order
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </>
-              )}
-            </button>
-            <p className="text-xs text-center text-slate-400">
-              🔒 Your payment is secured and encrypted
-            </p>
+          {/* Order summary — sticky on desktop, fixed bottom bar on mobile */}
+          <div className="lg:space-y-4">
+            {/* Desktop: sticky sidebar */}
+            <div className="hidden lg:block sticky top-24 space-y-4">
+              <OrderSummary items={items} shippingAddress={address} total={total} paymentMethod={paymentMethod} />
+              <button
+                type="submit"
+                disabled={submitting || !items.length}
+                className="btn-primary w-full py-3.5 text-base"
+              >
+                {submitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Processing…
+                  </span>
+                ) : (
+                  <>
+                    Place Order
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </>
+                )}
+              </button>
+              <p className="text-xs text-center text-slate-400">
+                🔒 Your payment is secured and encrypted
+              </p>
+            </div>
+
+            {/* Mobile: order summary (no button here — button is fixed at bottom) */}
+            <div className="lg:hidden">
+              <OrderSummary items={items} shippingAddress={address} total={total} paymentMethod={paymentMethod} />
+            </div>
           </div>
         </div>
-      </form>
+
+        {/* Mobile: fixed Place Order button at bottom */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-slate-100 px-4 py-3 shadow-lg">
+          <button
+            type="submit"
+            disabled={submitting || !items.length}
+            className="btn-primary w-full py-3.5 text-base"
+          >
+            {submitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Processing…
+              </span>
+            ) : (
+              <>
+                Place Order
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </>
+            )}
+          </button>
+          <p className="text-xs text-center text-slate-400 mt-1">🔒 Secured and encrypted</p>
     </div>
   );
 }
