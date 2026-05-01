@@ -46,9 +46,7 @@ export default function AdminOrderList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-slate-800">Orders</h2>
-      </div>
+      <div className="mb-6">
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-5">

@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
+// NAV_ITEMS used only for the mobile drawer
+
+
 const NAV_ITEMS = [
   {
     to: '/admin',
