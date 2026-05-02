@@ -92,6 +92,7 @@ async function createOrder(userId, shippingAddress, paymentMethod) {
       shippingCost,
       total,
       currency,
+      exchangeRate: currency === 'ETB' ? exchangeRate : null,
     });
 
     await order.save();

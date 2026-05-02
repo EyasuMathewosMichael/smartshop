@@ -12,7 +12,22 @@ export default function OrderDetail({ order }) {
   if (!order) return null;
   const addr = order.shippingAddress || {};
   const status = STATUS_CONFIG[order.orderStatus] || { label: order.orderStatus, cls: 'bg-slate-100 text-slate-600' };
-  const currencySymbol = order.currency === 'ETB' ? 'ETB ' : '$';
+  const isETB = order.currency === 'ETB';
+  const currencySymbol = isETB ? 'ETB ' : '$';
+  // For ETB orders: if item price looks like USD (much smaller than ETB equivalent),
+  // convert using stored exchange rate. New orders already store ETB prices.
+  const rate = order.exchangeRate || 1;
+  const itemPrice = (item) => {
+    if (!isETB) return item.price;
+    // If item price is already in ETB (new orders), use as-is.
+    // Detect old USD-priced items: if item.price * rate ≈ order.total / totalQty
+    const totalQty = (order.items || []).reduce((s, i) => s + i.quantity, 0) || 1;
+    const expectedETBUnit = order.total / totalQty;
+    const convertedPrice = item.price * rate;
+    // If the raw price is much smaller than expected ETB unit price, it's in USD
+    const looksLikeUSD = item.price < expectedETBUnit * 0.1;
+    return looksLikeUSD ? convertedPrice : item.price;
+  };
 
   return (
     <div className="space-y-6">
@@ -49,10 +64,10 @@ export default function OrderDetail({ order }) {
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-slate-800 truncate">{item.name}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Qty: {item.quantity} × {currencySymbol}{item.price?.toFixed(2)}</p>
+                <p className="text-xs text-slate-400 mt-0.5">Qty: {item.quantity} × {currencySymbol}{itemPrice(item).toFixed(2)}</p>
               </div>
               <p className="text-sm font-bold text-slate-800 shrink-0">
-                {currencySymbol}{(item.price * item.quantity).toFixed(2)}
+                {currencySymbol}{(itemPrice(item) * item.quantity).toFixed(2)}
               </p>
             </div>
           ))}

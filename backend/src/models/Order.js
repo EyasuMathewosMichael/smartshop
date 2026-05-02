@@ -149,6 +149,10 @@ const orderSchema = new mongoose.Schema(
       enum: ['USD', 'ETB'],
       required: [true, 'Currency is required'],
     },
+    exchangeRate: {
+      type: Number,
+      default: null,
+    },
   },
   {
     timestamps: true,
