@@ -55,13 +55,14 @@ async function createOrder(userId, shippingAddress, paymentMethod) {
     // Generate order number
     const orderNumber = generateOrderNumber();
 
-    // Snapshot items from cart
+    // Snapshot items from cart — convert prices to ETB if needed
     const items = cart.items.map((item) => {
       const product = item.productId; // populated product
+      const price = currency === 'ETB' ? parseFloat((item.price * exchangeRate).toFixed(2)) : item.price;
       return {
         productId: product._id || product,
         name: product.name || item.name,
-        price: item.price,
+        price,
         quantity: item.quantity,
         image:
           product.images && product.images.length > 0
