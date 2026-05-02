@@ -14,19 +14,19 @@ export default function OrderDetail({ order }) {
   const status = STATUS_CONFIG[order.orderStatus] || { label: order.orderStatus, cls: 'bg-slate-100 text-slate-600' };
   const isETB = order.currency === 'ETB';
   const currencySymbol = isETB ? 'ETB ' : '$';
-  // For ETB orders: if item price looks like USD (much smaller than ETB equivalent),
-  // convert using stored exchange rate. New orders already store ETB prices.
-  const rate = order.exchangeRate || 1;
-  const itemPrice = (item) => {
+
+  // Resolve item price in the order's currency.
+  // Old ETB orders stored item prices in USD — detect and convert using order.exchangeRate.
+  // New ETB orders already store prices in ETB.
+  const resolveItemPrice = (item) => {
     if (!isETB) return item.price;
-    // If item price is already in ETB (new orders), use as-is.
-    // Detect old USD-priced items: if item.price * rate ≈ order.total / totalQty
+    const rate = order.exchangeRate;
+    if (!rate) return item.price; // no rate stored, show as-is
+    // If item price * rate ≈ order total (for single-item orders), it's in USD
     const totalQty = (order.items || []).reduce((s, i) => s + i.quantity, 0) || 1;
-    const expectedETBUnit = order.total / totalQty;
-    const convertedPrice = item.price * rate;
-    // If the raw price is much smaller than expected ETB unit price, it's in USD
-    const looksLikeUSD = item.price < expectedETBUnit * 0.1;
-    return looksLikeUSD ? convertedPrice : item.price;
+    const avgETBUnit = order.total / totalQty;
+    const looksLikeUSD = item.price < avgETBUnit * 0.1;
+    return looksLikeUSD ? item.price * rate : item.price;
   };
 
   return (
@@ -51,31 +51,36 @@ export default function OrderDetail({ order }) {
           <h3 className="font-bold text-slate-800">Items Ordered</h3>
         </div>
         <div className="divide-y divide-slate-100">
-          {(order.items || []).map((item, i) => (
-            <div key={i} className="flex items-center gap-4 px-5 py-4">
-              {item.image?.url ? (
-                <img src={item.image.url} alt={item.name} className="w-14 h-14 object-cover rounded-xl bg-slate-100" />
-              ) : (
-                <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center text-slate-300">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+          {(order.items || []).map((item, i) => {
+            const price = resolveItemPrice(item);
+            return (
+              <div key={i} className="flex items-center gap-4 px-5 py-4">
+                {item.image?.url ? (
+                  <img src={item.image.url} alt={item.name} className="w-14 h-14 object-cover rounded-xl bg-slate-100" />
+                ) : (
+                  <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center text-slate-300">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-slate-800 truncate">{item.name}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Qty: {item.quantity} &times; {currencySymbol}{price.toFixed(2)}
+                  </p>
                 </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-slate-800 truncate">{item.name}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Qty: {item.quantity} × {currencySymbol}{itemPrice(item).toFixed(2)}</p>
+                <p className="text-sm font-bold text-slate-800 shrink-0">
+                  {currencySymbol}{(price * item.quantity).toFixed(2)}
+                </p>
               </div>
-              <p className="text-sm font-bold text-slate-800 shrink-0">
-                {currencySymbol}{(itemPrice(item) * item.quantity).toFixed(2)}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className="px-5 py-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
           <span className="font-bold text-slate-700">Total</span>
           <span className="text-lg font-bold text-indigo-600">
-            {order.currency === 'ETB' ? 'ETB ' : '$'}{order.total?.toFixed(2)}
+            {currencySymbol}{order.total?.toFixed(2)}
           </span>
         </div>
       </div>
@@ -116,7 +121,11 @@ export default function OrderDetail({ order }) {
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Status</span>
-              <span className={`font-semibold capitalize ${order.paymentStatus === 'completed' ? 'text-emerald-600' : order.paymentStatus === 'failed' ? 'text-red-600' : 'text-amber-600'}`}>
+              <span className={`font-semibold capitalize ${
+                order.paymentStatus === 'completed' ? 'text-emerald-600'
+                : order.paymentStatus === 'failed' ? 'text-red-600'
+                : 'text-amber-600'
+              }`}>
                 {order.paymentStatus}
               </span>
             </div>
